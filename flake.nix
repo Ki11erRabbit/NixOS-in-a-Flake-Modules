@@ -25,7 +25,7 @@
         in merged;
 
     mkOption = { pkgs, packages ? [], files ? [], hooks ? [] }: let 
-        textFiles = map (file: lib.writeTextFile {
+        textFiles = map (file: pkgs.writeTextFile {
                     name = file.name;
                     text = file.text;
                     destination = "${file.location}/${file.name}";
