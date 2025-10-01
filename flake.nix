@@ -26,12 +26,15 @@
 
     mkOption = { pkgs, packages ? [], files ? [], hooks ? [] }: let 
         dirHooks = map (dir: "\nmkdir -p ${dir}") (lib.unique (map (file: file.location) files));
-        textFiles = map (file: pkgs.writeTextFile {
-                    name = file.name;
-                    text = file.text;
+        textFiles = map (file: {
+                    textFile = pkgs.writeTextFile {
+                        name = file.name;
+                        text = file.text;
+                        destination = "${file.location}/${file.name}";
+                    };
                     destination = "${file.location}/${file.name}";
                 }) files;
-        fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") textFiles;
+        fileHooks = map (textFile: "\nln -sf ${textFile.textFile}/${textFile.destination} ${textFile.destination}") textFiles;
         fileHook = if fileHooks == [] then "" else "\n${lib.concatStringsSep " " dirHooks}\n${lib.concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
