@@ -35,16 +35,10 @@
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
         pkg = packages;
-
-    in rec {
+    in {
         packages = pkg;
 
-        hookscript = pkgs.writeShellScriptBin "hookscript" ''
-            #!${pkgs.stdenv.shell}
-            set -e
-            ${allHooks}
-        '';
-        hookpath = if allHooks == "" then "" else "\n${hookscript}/bin/hookscript";
+        hooks = allHooks;
     };
   in {
     lib = {
