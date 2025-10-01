@@ -33,7 +33,7 @@
         fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") files;
         fileHook = if fileHooks == [] then "" else "\n${concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
-        allHooks = fileHook + concatStrings optionHooks ;
+        allHooks = fileHook + lib.concatStrings optionHooks ;
     in {
         packages = packages;
         hookscript = pkgs.writeShellScriptBin "hookscript" ''
