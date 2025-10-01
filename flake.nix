@@ -25,12 +25,12 @@
         in merged;
 
     mkOption = { pkgs, packages ? [], files ? [], hooks ? [] }: let 
-        files = map (file: lib.writeTextFile {
+        textFiles = map (file: lib.writeTextFile {
                     name = file.name;
                     text = file.text;
                     destination = "${file.location}/${file.name}";
                 }) files;
-        fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") files;
+        fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") textFiles;
         fileHook = if fileHooks == [] then "" else "\n${lib.concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
