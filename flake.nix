@@ -23,9 +23,28 @@
 
             merged = mkMerge evaluated;
         in merged;
+
+    mkOption = { pkgs, packages ? [], files ? [], hooks ? [] }: let 
+        files = map (file: lib.writeTextFile {
+                    name = file.name;
+                    text = file.text;
+                    destination = "${file.location}/${file.name}";
+                }) files;
+        fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") files;
+        fileHook = if fileHooks == [] then "" else "\n${concatStringsSep " " fileHooks}";
+        optionHooks = map (hook: "\n${hook}") hooks;
+        allHooks = fileHook + concatStrings optionHooks ;
+    in {
+        packages = packages;
+        hookscript = pkgs.writeShellScriptBin "hookscript" ''
+            #!${pkgs.stdenv.shell}
+            set -e
+            ${allHooks}
+        '';
+    };
   in {
     lib = {
-        inherit evalModules mkIf mkMerge;
+        inherit evalModules mkIf mkMerge mkOption;
     };
 
   };
