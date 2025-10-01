@@ -35,7 +35,7 @@
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
 
-    in {
+    in rec {
         packages = packages;
 
         hookscript = pkgs.writeShellScriptBin "hookscript" ''
