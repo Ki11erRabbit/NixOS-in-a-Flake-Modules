@@ -34,13 +34,15 @@
         fileHook = if fileHooks == [] then "" else "\n${lib.concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
-    in {
-        packages = packages;
-        hookscript = if allHooks == "" then null else pkgs.writeShellScriptBin "hookscript" ''
+
+        hookscript = pkgs.writeShellScriptBin "hookscript" ''
             #!${pkgs.stdenv.shell}
             set -e
             ${allHooks}
         '';
+    in {
+        packages = packages;
+        hookpath = "\n${hookscript}/bin/hookscript";
     };
   in {
     lib = {
