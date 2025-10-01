@@ -34,9 +34,10 @@
         fileHook = if fileHooks == [] then "" else "\n${lib.concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
+        pkg = packages;
 
     in rec {
-        packages = packages;
+        packages = pkg;
 
         hookscript = pkgs.writeShellScriptBin "hookscript" ''
             #!${pkgs.stdenv.shell}
