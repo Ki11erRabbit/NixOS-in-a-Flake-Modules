@@ -31,7 +31,7 @@
                     destination = "${file.location}/${file.name}";
                 }) files;
         fileHooks = map (textFile: "\nln -sf ${textFile}/${textFile.destination} ${textFile.destination}") files;
-        fileHook = if fileHooks == [] then "" else "\n${concatStringsSep " " fileHooks}";
+        fileHook = if fileHooks == [] then "" else "\n${lib.concatStringsSep " " fileHooks}";
         optionHooks = map (hook: "\n${hook}") hooks;
         allHooks = fileHook + lib.concatStrings optionHooks ;
     in {
