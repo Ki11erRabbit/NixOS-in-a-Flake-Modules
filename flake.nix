@@ -36,7 +36,7 @@
         allHooks = fileHook + lib.concatStrings optionHooks ;
     in {
         packages = packages;
-        hookscript = pkgs.writeShellScriptBin "hookscript" ''
+        hookscript = if allHooks == "" then null else pkgs.writeShellScriptBin "hookscript" ''
             #!${pkgs.stdenv.shell}
             set -e
             ${allHooks}
